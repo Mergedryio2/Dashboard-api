@@ -95,14 +95,14 @@ const getUser = async (username, password) => {
       throw error;
     }
   };
-const createUser = async (User) => {
+const createUser = async (username, password) => {
     try {
         let pool = await sql.connect(config);
         console.log('Create User to SQL Server');
         
         let users = await pool.request()
-            .input('Username', sql.NVarChar, User.Username)
-            .input('Password', sql.NVarChar, User.Password)
+            .input('Username', sql.NVarChar, username)
+            .input('Password', sql.NVarChar, password)
             .query(`
                 INSERT INTO Users (Username, Password)
                 VALUES (@Username, @Password)

@@ -11,7 +11,7 @@ function App() {
       <div>
         {/* Define Routes */}
         <Routes>
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/datainsert" element={<DataInsert />} />
         </Routes>

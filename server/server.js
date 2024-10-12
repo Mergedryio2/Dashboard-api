@@ -67,9 +67,9 @@ app.post('/datainsert',async (req,res) => {
 app.post('/signin',async (req,res) => {
     try {
         // Step 1: Check if StudentID exists
-        const UserData = req.body;
+        const { Username, Password } = req.body;
 
-        const result = await dbOperation.createUser(UserData);
+        const result = await dbOperation.createUser(Username, Password);
         res.send({ message: 'User data inserted successfully', result });
     } catch (error) {
         console.error('Error inserting user data:', error);

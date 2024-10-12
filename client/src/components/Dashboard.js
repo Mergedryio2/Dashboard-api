@@ -127,7 +127,7 @@ const Dashboard = () => {
     window.location.href = '/datainsert';
   }
   async function BackToLogin (){
-    window.location.href = '/login';
+    window.location.href = '/';
   }
 
 
