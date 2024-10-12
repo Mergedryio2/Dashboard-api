@@ -71,17 +71,30 @@ const createStudents = async(Students) => {
         console.log(error);
     }
 }
-const getUser = async() => {
+// Function to get a user from the database
+const getUser = async (username, password) => {
     try {
-        let pool = await sql.connect(config);
-        console.log('getUser in SQL Server');
-        let student = pool.request().query('SELECT * FROM Users');
-        console.log(student)
-        return student;
-    }catch(error){
-        console.log(error);
+      // Connect to the database
+      let pool = await sql.connect(config);
+  
+      // Query the database for the user
+      const result = await pool
+        .request()
+        .input('Username', sql.VarChar, username)
+        .input('Password', sql.VarChar, password)
+        .query('SELECT * FROM Users WHERE Username = @Username AND Password = @Password');
+  
+      // If a user is found, return it
+      if (result.recordset.length > 0) {
+        return result.recordset[0];
+      } else {
+        return null; // No user found
+      }
+    } catch (error) {
+      console.error('Database error:', error);
+      throw error;
     }
-};
+  };
 const createUser = async (User) => {
     try {
         let pool = await sql.connect(config);

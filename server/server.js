@@ -3,7 +3,7 @@ const express   = require('express'),
     cors        = require('cors'),
     // Student     = require('./Database/Students'),
     // bcrypt      = require('bcrypt'), // Import bcrypt for password hashing
-    // jwt         = require('jsonwebtoken'); // Import jsonwebtoken for token creation
+    jwt         = require('jsonwebtoken'); // Import jsonwebtoken for token creation
     dbOperation = require("./Database/dbOperation")
 const app = express();
 const port = 5000;
@@ -18,11 +18,26 @@ app.post('/dashboard',async(req,res) => {
     res.send(result);
 })
 
-app.post('/login',async (req,res) => {
-    console.log('Login');
-    const result = await dbOperation.getUser();
-    res.send(result);
-})
+app.post('/login', async (req, res) => {
+    const { Username, Password } = req.body;
+    
+    // Assuming you have a function to get the user from the database
+    const user = await dbOperation.getUser(Username, Password);
+    
+    if (user) {
+      // Generate a token (e.g., using JWT)
+      const token = jwt.sign({ userId: user.id, username: user.Username }, 'secret-key', { expiresIn: '1h' });
+  
+      res.json({
+        token,
+        recordset: [user] // Match the expected format in your frontend
+      });
+    } else {
+      res.status(401).json({ message: 'Invalid username or password' });
+    }
+  });
+  
+  
 
 app.post('/datainsert',async (req,res) => {
     try {
@@ -30,7 +45,7 @@ app.post('/datainsert',async (req,res) => {
         const existingStudent = await dbOperation.getStudentById();
         const studentData = req.body;
         
-        let newStudentID;
+
         if (existingStudent) {
             // If exists, increment the StudentID
             studentData.StudentID = existingStudent.StudentID + 1; // Incrementing logic

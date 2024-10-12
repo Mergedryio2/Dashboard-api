@@ -12,40 +12,53 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('./login', {
+      const response = await fetch('/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ Username: User.Username, Password: User.Password }), // Use the User object
+        body: JSON.stringify({ Username: User.Username, Password: User.Password }),
       });
-      const data = await response.json();
-
-      // Assuming the API returns a recordset with user data
-      if (data.recordset && data.recordset.length > 0) {
-        // Check if any record matches the entered username and password
-        const user = data.recordset.find(record => 
-          record.Username === User.Username && record.Password === User.Password
-        );
+  
+      // Log the raw response
+      console.log('Raw response:', response);
+  
+      if (response.ok && response.headers.get('Content-Type').includes('application/json')) {
+        const data = await response.json();
         
-        // Check if the username and password match
-        if (user) {
-          localStorage.setItem('token', data.token); // Store the token
-          console.log('Login successful:', user);
-          setErrorMessage('Login successful');
-          // For example, you might redirect to the dashboard
-          window.location.href = '/dashboard';
+        // Assuming the API returns a recordset with user data
+        if (data.recordset && data.recordset.length > 0) {
+          const user = data.recordset.find(record =>
+            record.Username === User.Username && record.Password === User.Password
+          );
+  
+          if (user) {
+            localStorage.setItem('token', data.token);
+            console.log('Login successful:', user);
+            setErrorMessage('Login successful');
+            window.location.href = '/dashboard';
+          } else {
+            setErrorMessage('Invalid username or password');
+          }
         } else {
-          setErrorMessage('Invalid username or password');
+          setErrorMessage('No user found');
         }
       } else {
-        setErrorMessage('No user found');
+        setErrorMessage('Unexpected response from server');
+        console.error('Unexpected response details:', {
+          status: response.status,
+          statusText: response.statusText,
+          contentType: response.headers.get('Content-Type')
+        });
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('Login error:', error.message || error);
       setErrorMessage('An error occurred while logging in');
     }
   };
+  
+  
+  
 
   const handleSignin = async () => {
     try {
