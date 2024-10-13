@@ -126,10 +126,10 @@ const DataInsert = () => {
                     </select>
                 </label>
 
-                <button type="submit">Submit</button>
+                <button onClick={handleSubmit}>Submit</button>
 
-                <button onClick={BackToDashboard}>Back to Dashboard</button>
-            </form>
+                </form>
+            <button onClick={BackToDashboard}>Back to Dashboard</button>
         </div>
     );
 };

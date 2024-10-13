@@ -1,17 +1,11 @@
 // Database configuration
 const config = {
-    user: 'Merge', // your database username
-    password: 'Merge', // your database password
-    server: 'MEZLAPTOP', // your server name (including instance if necessary)
-    database: 'DataVisualization', // your database name
-    options: {
-        encrypt: true, // Use encryption for data sent to and from SQL Server
-        trustServerCertificate: true, // Change to true for local dev / self-signed certs
-        trustedConnection: false,
-        enableArithAbort: true, // Sometimes necessary for newer SQL Server versions
-        instancename:"SQLEXPRESS"
-    },
-    port: 1433
+    host: 'm7nj9dclezfq7ax1.cbetxkdyhwsb.us-east-1.rds.amazonaws.com', // your server name (including instance if necessary)
+    port:"3306",
+    user: 'brob9hzdwyn58yyp', // your database username
+    password: 'x1xnoawissv1vdtu', // your database password
+    database: 'iqk2y1v1bgzazb8b' // your database name
+
 }
 
 module.exports = config;

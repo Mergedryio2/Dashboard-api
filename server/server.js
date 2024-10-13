@@ -1,81 +1,109 @@
+const express = require('express');
+const cors = require('cors');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt'); // Import bcrypt for password hashing
+const dbOperation = require("./Database/dbOperation");
 
-const express   = require('express'),
-    cors        = require('cors'),
-    // Student     = require('./Database/Students'),
-    // bcrypt      = require('bcrypt'), // Import bcrypt for password hashing
-    jwt         = require('jsonwebtoken'); // Import jsonwebtoken for token creation
-    dbOperation = require("./Database/dbOperation")
 const app = express();
-const port = 5000;
+const port = process.env.port || 5000;
 
+// Middleware
 app.use(express.json());
-// app.use(express.urlencoded());
 app.use(cors());
 
-app.post('/dashboard',async(req,res) => {
-    console.log('getStudents');
-    const result = await dbOperation.getStudents();
-    res.send(result);
-})
+// Use environment variables for secret keys
+const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-key';
 
-app.post('/login', async (req, res) => {
-    const { Username, Password } = req.body;
-    
-    // Assuming you have a function to get the user from the database
-    const user = await dbOperation.getUser(Username, Password);
-    
-    if (user) {
-      // Generate a token (e.g., using JWT)
-      const token = jwt.sign({ userId: user.id, username: user.Username }, 'secret-key', { expiresIn: '1h' });
-  
-      res.json({
-        token,
-        recordset: [user] // Match the expected format in your frontend
-      });
-    } else {
-      res.status(401).json({ message: 'Invalid username or password' });
-    }
-  });
-  
-  
+// Error handling middleware for async routes
+const asyncHandler = fn => (req, res, next) => {
+    Promise.resolve(fn(req, res, next)).catch(next);
+};
 
-app.post('/datainsert',async (req,res) => {
+
+// Dashboard route on GET
+app.get('/dashboard', async (req, res) => {
     try {
-        // Step 1: Check if StudentID exists
-        const existingStudent = await dbOperation.getStudentById();
-        const studentData = req.body;
+        console.log('Fetching students data...');
+        const result = await dbOperation.getStudents();
         
-
-        if (existingStudent) {
-            // If exists, increment the StudentID
-            studentData.StudentID = existingStudent.StudentID + 1; // Incrementing logic
-        } else {
-            // If not exists, set the StudentID to 1 or your preferred starting point
-            studentData.StudentID = 1; 
-        }
-        // console.log(studentData);
-
-        // Step 2: Insert the new student data with the new StudentID
-        const result = await dbOperation.createStudents(studentData);
-        res.send({ message: 'Student data inserted successfully', result });
+        // Make sure the response structure matches what the frontend expects
+        res.json({
+            recordset: result // or result.recordset if it's nested
+        });
     } catch (error) {
-        console.error('Error inserting student data:', error);
-        res.send({ message: 'Error inserting student data' });
+        console.error('Error fetching students data:', error);
+        res.status(500).send({ message: 'Error fetching students data' });
     }
-})
+});
 
-app.post('/signin',async (req,res) => {
+// Dashboard route on POST
+app.post('/dashboard', async (req, res) => {
     try {
-        // Step 1: Check if StudentID exists
+        console.log('Fetching students data...');
+        const result = await dbOperation.getStudents();
+        
+        // Make sure the response structure matches what the frontend expects
+        res.json({
+            recordset: result // or result.recordset if it's nested
+        });
+    } catch (error) {
+        console.error('Error fetching students data:', error);
+        res.status(500).send({ message: 'Error fetching students data' });
+    }
+});
+
+
+app.post('/', async (req, res) => {
+    try {
         const { Username, Password } = req.body;
 
-        const result = await dbOperation.createUser(Username, Password);
-        res.send({ message: 'User data inserted successfully', result });
+        // Get user and validate password
+        const user = await dbOperation.getUser(Username, Password);
+
+        res.json({
+            recordset: user // or result.recordset if it's nested
+        });
     } catch (error) {
-        console.error('Error inserting user data:', error);
-        res.send({ message: 'Error inserting user data' });
+        console.error('Login error:', error);
+        res.status(500).json({ message: 'Internal server error' });
     }
-})
+});
 
 
+
+// Data insert route
+app.post('/datainsert', asyncHandler(async (req, res) => {
+    const studentData = req.body;
+
+    // Get the max StudentID
+    const existingStudent = await dbOperation.getStudentById();
+
+    // Set the new StudentID
+    studentData.StudentID = existingStudent ? existingStudent.StudentID + 1 : 1;
+
+    // Insert the new student data
+    const result = await dbOperation.createStudents(studentData);
+    res.status(201).send({ message: 'Student data inserted successfully', result });
+}));
+
+// Sign-up route
+app.post('/signin', asyncHandler(async (req, res) => {
+    const { Username, Password } = req.body;
+
+    // Hash the password before storing
+    const hashedPassword = await bcrypt.hash(Password, 10);
+
+    const result = await dbOperation.createUser(Username, hashedPassword);
+    res.status(201).send({ message: 'User data inserted successfully', result });
+}));
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error('Server error:', err);
+    res.status(500).send({ message: 'Server error' });
+});
+
+
+
+// Start the server
 app.listen(port, () => console.log(`Listening on port ${port}`));
