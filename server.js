@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt'); // Import bcrypt for password hashing
 const dbOperation = require("./Database/dbOperation");
 
 const app = express();
-const port = process.env.port || 5000;
+const port = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
