@@ -7,9 +7,16 @@ const dbOperation = require("./Database/dbOperation");
 const app = express();
 const port = process.env.PORT || 5000;
 
+// Configure CORS options if needed
+const corsOptions = {
+    origin: 'https://vercel.live/link/dashboard-frontend-mergedryio2-yossaphan-kaenwongs-projects.vercel.app?via=deployment-domains-list', // Replace with your frontend URL
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Include credentials (e.g., cookies, authorization headers)
+  };
+
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions)); // Use CORS with specified options
 
 // Use environment variables for secret keys
 const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-key';
