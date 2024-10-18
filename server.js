@@ -7,19 +7,11 @@ const dbOperation = require("./Database/dbOperation");
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Configure CORS options if needed
-const corsOptions = {
-    origin: 'https://vercel.live/link/dashboard-frontend-mergedryio2-yossaphan-kaenwongs-projects.vercel.app?via=deployment-domains-list', // Replace with your frontend URL
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true, // Include credentials (e.g., cookies, authorization headers)
-  };
 
 // Middleware
 app.use(express.json());
-app.use(cors(corsOptions)); // Use CORS with specified options
+app.use(cors()); // Use CORS with specified options
 
-// Use environment variables for secret keys
-const JWT_SECRET = process.env.JWT_SECRET || 'default-secret-key';
 
 // Error handling middleware for async routes
 const asyncHandler = fn => (req, res, next) => {
@@ -110,7 +102,15 @@ app.use((err, req, res, next) => {
     res.status(500).send({ message: 'Server error' });
 });
 
-
+process.on('uncaughtException', (err) => {
+    console.error('There was an uncaught error', err);
+    process.exit(1);
+  });
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled rejection at', promise, 'reason:', reason);
+    process.exit(1);
+  });
+  
 
 // Start the server
 app.listen(port, () => console.log(`Listening on port ${port}`));

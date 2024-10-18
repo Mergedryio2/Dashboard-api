@@ -1,6 +1,6 @@
 const config = require('./dbconfig');
 const sql = require('mysql2/promise'); // Use promise-based API
-const bcrypt = require('bcrypt'); // Add this line at the top of your file
+// const bcrypt = require('bcrypt'); // Add this line at the top of your file
 // Function to get the maximum StudentID
 async function getStudentById() {
     try {
