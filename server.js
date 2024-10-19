@@ -8,9 +8,16 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 
+// Allow CORS from your frontend domain
+const allowedOrigins = ['dashboard-frontend-kappa-khaki.vercel.app'];
+app.use(cors({
+    origin: allowedOrigins,
+    methods: ['GET', 'POST'],
+    credentials: true, // Enable if you need to use cookies
+}));
 // Middleware
 app.use(express.json());
-app.use(cors()); // Use CORS with specified options
+
 
 
 // Error handling middleware for async routes
@@ -114,3 +121,5 @@ process.on('uncaughtException', (err) => {
 
 // Start the server
 app.listen(port, () => console.log(`Listening on port ${port}`));
+
+module.exports = app;
