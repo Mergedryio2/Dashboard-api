@@ -13,7 +13,8 @@ const allowedOrigins = ['https://database-frontend-pearl.vercel.app'];
 app.use(cors({
     origin: allowedOrigins,
     methods: ['GET', 'POST'],
-    credentials: true, // Enable if you need to use cookies
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'], // Include any additional headers your requests might include// Enable if you need to use cookies
 }));
 // Middleware
 app.use(express.json());
