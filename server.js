@@ -9,7 +9,7 @@ const port = process.env.PORT || 5000;
 
 
 // Allow CORS from your frontend domain
-const allowedOrigins = ['dashboard-frontend-kappa-khaki.vercel.app'];
+const allowedOrigins = ['https://database-frontend-pearl.vercel.app'];
 app.use(cors({
     origin: allowedOrigins,
     methods: ['GET', 'POST'],
