@@ -36,7 +36,7 @@ app.use(express.json());
 const asyncHandler = fn => (req, res, next) => {
     Promise.resolve(fn(req, res, next)).catch(next);
 };
-app.post('/', async (req, res) => {
+app.post('/api/', async (req, res) => {
     try {
         const { Username, Password } = req.body;
 
@@ -52,7 +52,7 @@ app.post('/', async (req, res) => {
     }
 });
 // Dashboard route on GET
-app.get('/dashboard', async (req, res) => {
+app.get('/api/dashboard', async (req, res) => {
     try {
         console.log('Fetching students data...');
         const result = await dbOperation.getStudents();
@@ -68,7 +68,7 @@ app.get('/dashboard', async (req, res) => {
 });
 
 // Data insert route
-app.post('/datainsert', asyncHandler(async (req, res) => {
+app.post('/api/datainsert', asyncHandler(async (req, res) => {
     const studentData = req.body;
 
     // Get the max StudentID
@@ -83,7 +83,7 @@ app.post('/datainsert', asyncHandler(async (req, res) => {
 }));
 
 // Sign-up route
-app.post('/signin', asyncHandler(async (req, res) => {
+app.post('/api/signin', asyncHandler(async (req, res) => {
     const { Username, Password } = req.body;
 
     // Hash the password before storing
