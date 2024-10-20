@@ -39,7 +39,7 @@ const asyncHandler = fn => (req, res, next) => {
 app.post('/api/', async (req, res) => {
     try {
         const { Username, Password } = req.body;
-
+        console.log('Login process...');
         // Get user and validate password
         const user = await dbOperation.getUser(Username, Password);
 
