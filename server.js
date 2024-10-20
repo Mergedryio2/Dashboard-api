@@ -51,6 +51,21 @@ app.post('/api/', async (req, res) => {
         res.status(500).json({ message: 'Internal server error' });
     }
 });
+// Dashboard route on GET
+app.get('/api/dashboard', async (req, res) => {
+    try {
+        console.log('Fetching students data...');
+        const result = await dbOperation.getStudents();
+        
+        // Ensure the response structure matches what the frontend expects
+        res.json({
+            recordset: result // or result.recordset if it's nested
+        });
+    } catch (error) {
+        console.error('Error fetching students data:', error);
+        res.status(500).send({ message: 'Error fetching students data' });
+    }
+});
 
 // Data insert route
 app.post('/api/datainsert', asyncHandler(async (req, res) => {
