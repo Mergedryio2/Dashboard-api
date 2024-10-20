@@ -30,7 +30,7 @@ app.use((req, res, next) => {
 });
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: '1mb' }));
 
 // Error handling middleware for async routes
 const asyncHandler = fn => (req, res, next) => {
