@@ -7,18 +7,20 @@ const dbOperation = require("./Database/dbOperation");
 const app = express();
 const port = process.env.PORT || 5000;
 
-// Allow CORS from your frontend domain
-const allowedOrigins = ['http://localhost:3000', 'https://database-frontend-6pu5ok959-yossaphan-kaenwongs-projects.vercel.app'];
 
-app.use(cors({
-    origin: allowedOrigins,
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type', 'Authorization'], // Include any additional headers your requests might include
-}));
-app.options('/api/dashboard', cors()); // Enable pre-flight for this route
-app.options('/api/', cors()); // Enable pre-flight for this route
+// Configure CORS middleware
+const corsOptions = {
+    origin: ['http://localhost:3000', 'https://database-frontend-6pu5ok959-yossaphan-kaenwongs-projects.vercel.app'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true // If you need to send cookies or authorization headers
+  };
+  
+app.use(cors(corsOptions));
+
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://database-frontend-6pu5ok959-yossaphan-kaenwongs-projects.vercel.app');
+    //res.header('Access-Control-Allow-Origin', 'https://database-frontend-6pu5ok959-yossaphan-kaenwongs-projects.vercel.app');
+    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.header('Access-Control-Allow-Methods', 'GET, POST');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     next();
@@ -31,7 +33,7 @@ app.use(express.json());
 const asyncHandler = fn => (req, res, next) => {
     Promise.resolve(fn(req, res, next)).catch(next);
 };
-app.post('/api/', async (req, res) => {
+app.post('/', async (req, res) => {
     const { Username, Password } = req.body;
   
     // Find user in the database (replace this with your database logic)
@@ -45,7 +47,7 @@ app.post('/api/', async (req, res) => {
     res.status(200).json({ message: 'Login successful', user: { id: user.id, username: user.username } });
   });
 // Dashboard route on GET
-app.get('/api/dashboard', async (req, res) => {
+app.get('/dashboard', async (req, res) => {
     try {
         console.log('Fetching students data...');
         const result = await dbOperation.getStudents();
@@ -61,7 +63,7 @@ app.get('/api/dashboard', async (req, res) => {
 });
 
 // Data insert route
-app.post('/api/datainsert', asyncHandler(async (req, res) => {
+app.post('/datainsert', asyncHandler(async (req, res) => {
     const studentData = req.body;
 
     // Get the max StudentID
@@ -76,13 +78,10 @@ app.post('/api/datainsert', asyncHandler(async (req, res) => {
 }));
 
 // Sign-up route
-app.post('/api/signin', asyncHandler(async (req, res) => {
+app.post('/signin', asyncHandler(async (req, res) => {
     const { Username, Password } = req.body;
 
-    // Hash the password before storing
-    const hashedPassword = await bcrypt.hash(Password, 10);
-
-    const result = await dbOperation.createUser(Username, hashedPassword);
+    const result = await dbOperation.createUser(Username, Password);
     res.status(201).send({ message: 'User data inserted successfully', result });
 }));
 
