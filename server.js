@@ -10,7 +10,7 @@ const port = process.env.PORT || 5000;
 
 // Configure CORS middleware
 const corsOptions = {
-    origin: ['http://localhost:3000', 'https://database-frontend-git-main-yossaphan-kaenwongs-projects.vercel.app/'],
+    origin: ['http://localhost:3000', 'https://database-frontend-6pu5ok959-yossaphan-kaenwongs-projects.vercel.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true // If you need to send cookies or authorization headers
@@ -20,7 +20,7 @@ app.use(cors(corsOptions));
 
 app.use((req, res, next) => {
     //res.header('Access-Control-Allow-Origin', 'https://database-frontend-6pu5ok959-yossaphan-kaenwongs-projects.vercel.app');
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.header('Access-Control-Allow-Origin', 'https://database-frontend-6pu5ok959-yossaphan-kaenwongs-projects.vercel.app');
     res.header('Access-Control-Allow-Methods', 'GET, POST');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     next();
