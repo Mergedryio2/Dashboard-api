@@ -76,7 +76,20 @@ app.get('/dashboard', async (req, res) => {
         res.status(500).send({ message: 'Error fetching students data' });
     }
 });
-
+app.get('/avgscore', async (req, res) => {
+    try {
+        console.log('Fetching students data...');
+        const result = await dbOperation.AvgPrestigeScore();
+        
+        // Ensure the response structure matches what the frontend expects
+        res.json({
+            recordset: result // or result.recordset if it's nested
+        });
+    } catch (error) {
+        console.error('Error fetching Average Score data:', error);
+        res.status(500).send({ message: 'Error fetching Average Score data' });
+    }
+});
 // Data insert route
 app.post('/datainsert', asyncHandler(async (req, res) => {
     const studentData = req.body;
