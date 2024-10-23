@@ -128,7 +128,7 @@ const AvgPrestigeScore = async() => {
         console.log('Showing Average PrestigeScore Data');
 
         const [rows] = await pool.query(`SELECT 
-        el.Description,
+        el.Description AS EducationLevel,
         AVG(s.FathersPrestigeScore) AS AveragePrestigeScore,
         AVG(s.DVRTID) AS AverageDVRTScore
     FROM Student s
