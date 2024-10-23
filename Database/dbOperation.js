@@ -122,11 +122,31 @@ const createUser = async (username, password) => {
     }
 };
 
+const AvgPrestigeScore = async() => {
+    try{
+        const pool = await sql.createConnection(config);
+        console.log('Showing Average PrestigeScore Data');
+
+        const [rows] = await pool.query(`SELECT 
+        el.Description,
+        AVG(s.FathersPrestigeScore) AS AveragePrestigeScore
+    FROM Student s
+    JOIN EducationLevel el ON s.EducationID = el.EducationID
+    GROUP BY el.Description
+    ORDER BY el.Description DESC;`);
+        return rows;
+
+    }catch (error){
+        console.error('Database Error',error);
+        return null;
+    }
+}
+
 module.exports = {
     createStudents,
     getStudents,
     getStudentById,
-    
     getUser,
-    createUser
+    createUser,
+    AvgPrestigeScore
 };
