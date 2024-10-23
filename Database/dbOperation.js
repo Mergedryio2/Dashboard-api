@@ -23,7 +23,19 @@ const getStudents = async () => {
         const pool = await sql.createConnection(config);
         console.log('Fetching Students data from SQL Server');
 
-        const [rows] = await pool.query('SELECT * FROM Student');
+        const [rows] = await pool.query(`SELECT 
+	s.studentID,
+	s2.Description as Sex,
+	s.DVRTID ,
+	el.Description as EducationLevel,
+	lc.Taken ,
+	s.FathersPrestigeScore ,
+	st.TypeDescription as SchoolType
+FROM Student s
+JOIN Sex s2 ON s.SexID = s2.SexID 
+JOIN EducationLevel el ON s.EducationID = el.EducationID 
+JOIN SchoolType st ON s.SchoolTypeID = st.SchoolTypeID 
+JOIN LeavingCertificate lc ON s.CertID = lc.LeavingCertID `);
         // console.log(rows);
         return rows;
     } catch (error) {
