@@ -129,7 +129,8 @@ const AvgPrestigeScore = async() => {
 
         const [rows] = await pool.query(`SELECT 
         el.Description,
-        AVG(s.FathersPrestigeScore) AS AveragePrestigeScore
+        AVG(s.FathersPrestigeScore) AS AveragePrestigeScore,
+        AVG(s.DVRTID) AS AverageDVRTScore
     FROM Student s
     JOIN EducationLevel el ON s.EducationID = el.EducationID
     GROUP BY el.Description
